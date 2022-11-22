@@ -1,11 +1,12 @@
+import 'package:expenses_flutter/components/ChartBar.dart';
 import 'package:expenses_flutter/models/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class Chart extends StatelessWidget {
-  const Chart({Key? key, required this.reacentTransaction}) : super(key: key);
+  final List<Transaction> recentTransaction;
 
-  final List<Transaction> reacentTransaction;
+  const Chart(this.recentTransaction, {Key? key}) : super(key: key);
 
   List<Map<String, Object>> get groupedTransactions {
     return List.generate(7, (index) {
@@ -15,22 +16,28 @@ class Chart extends StatelessWidget {
 
       double totalSum = 0.0;
 
-      for (var i = 0; i < reacentTransaction.length; i++) {
-        bool sameDay = reacentTransaction[i].date.day == weekDay.day;
-        bool sameMonth = reacentTransaction[i].date.month == weekDay.month;
-        bool sameYear = reacentTransaction[i].date.year == weekDay.year;
+      for (var i = 0; i < recentTransaction.length; i++) {
+        bool sameDay = recentTransaction[i].date.day == weekDay.day;
+        bool sameMonth = recentTransaction[i].date.month == weekDay.month;
+        bool sameYear = recentTransaction[i].date.year == weekDay.year;
 
         if (sameDay && sameMonth && sameYear) {
-          totalSum += reacentTransaction[i].value;
+          totalSum += recentTransaction[i].value;
         }
       }
-      print(DateFormat.E().format(weekDay)[0]);
-      print(totalSum);
 
       return {
-        'day': DateFormat.E().format(weekDay)[0],
+        'day': DateFormat(
+          "EEEE",
+        ).format(weekDay)[0],
         'value': totalSum,
       };
+    }).reversed.toList();
+  }
+
+  double get _weekTotalValue {
+    return groupedTransactions.fold(0.0, (sum, tr) {
+      return sum + (tr['value'] as double);
     });
   }
 
@@ -39,8 +46,21 @@ class Chart extends StatelessWidget {
     return Card(
       elevation: 6,
       margin: EdgeInsets.all(20),
-      child: Row(
-        children: [],
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: groupedTransactions.map((tr) {
+            return Flexible(
+              fit: FlexFit.tight,
+              child: ChartBar(
+                label: tr['day'].toString(),
+                value: double.parse(tr['value'].toString()),
+                percentage: (tr['value'] as double) / _weekTotalValue,
+              ),
+            );
+          }).toList(),
+        ),
       ),
     );
   }

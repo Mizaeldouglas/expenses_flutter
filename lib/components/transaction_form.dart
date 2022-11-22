@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class TransactionForm extends StatefulWidget {
   TransactionForm({Key? key, required this.onSubmit}) : super(key: key);
@@ -10,8 +11,9 @@ class TransactionForm extends StatefulWidget {
 
 class _TransactionFormState extends State<TransactionForm> {
   final titleController = TextEditingController();
-
   final valueController = TextEditingController();
+
+  DateTime? _selectDate;
 
   _submitForm() {
     final title = titleController.text;
@@ -21,6 +23,22 @@ class _TransactionFormState extends State<TransactionForm> {
     }
 
     widget.onSubmit(title, value);
+  }
+
+  _showDatePiker() {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime.now(),
+    ).then((pickedDate) {
+      if (pickedDate == null) {
+        return;
+      }
+      setState(() {
+        _selectDate = pickedDate;
+      });
+    });
   }
 
   @override
@@ -46,12 +64,33 @@ class _TransactionFormState extends State<TransactionForm> {
                 labelText: 'Valor (R\$)',
               ),
             ),
-            TextButton(
+            Container(
+              height: 70,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(_selectDate == null
+                        ? "Nenhuma Data selecionada!"
+                        : "Data Selecioanda: ${DateFormat("dd/MM/yyyy").format(_selectDate!)}"),
+                  ),
+                  TextButton(
+                    onPressed: _showDatePiker,
+                    child: Text(
+                      "Selecionar Data",
+                      style: TextStyle(
+                        color: Colors.purple,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ElevatedButton(
               onPressed: _submitForm,
               child: Text(
                 "Nova Transação",
                 style: TextStyle(
-                  color: Colors.purple,
                   fontWeight: FontWeight.bold,
                 ),
               ),

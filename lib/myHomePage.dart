@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:expenses_flutter/components/chart.dart';
 import 'package:expenses_flutter/components/transaction_form.dart';
 import 'package:expenses_flutter/components/transaction_list.dart';
 import 'package:expenses_flutter/models/transaction.dart';
@@ -21,13 +22,27 @@ class _MyHomePageState extends State<MyHomePage> {
       id: 't2',
       title: 'Conta de Luz',
       value: 211.30,
-      date: DateTime.now().subtract(Duration(days: 4, hours: 5)),
+      date: DateTime.now().subtract(Duration(days: 3)),
+    ),
+    Transaction(
+      id: 't3',
+      title: 'Cartão de credito',
+      value: 1500.90,
+      date: DateTime.now().subtract(Duration(days: 3)),
+    ),
+    Transaction(
+      id: 't4',
+      title: 'Lanche',
+      value: 30.00,
+      date: DateTime.now().subtract(Duration(days: 3)),
     ),
   ];
 
   List<Transaction> get _recenttTransaction {
     return _transactions.where((tr) {
-      return false;
+      return tr.date.isAfter(DateTime.now().subtract(
+        Duration(days: 7),
+      ));
     }).toList();
   }
 
@@ -75,14 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              child: Card(
-                color: Theme.of(context).colorScheme.secondary,
-                child: Text('Gráfico'),
-                elevation: 5,
-              ),
-            ),
+            Chart(_recenttTransaction),
             TransactionList(transaction: _transactions),
           ],
         ),
