@@ -82,9 +82,10 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).colorScheme.primary,
         child: Icon(
           Icons.add,
-          color: Theme.of(context).colorScheme.primary,
+          color: Theme.of(context).colorScheme.onSecondary,
         ),
         onPressed: () => _openTransactionFormModal(context),
       ),

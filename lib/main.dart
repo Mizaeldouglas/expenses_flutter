@@ -13,8 +13,8 @@ class ExpensesApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: tema.copyWith(
         colorScheme: tema.colorScheme.copyWith(
-          primary: Colors.purple,
-          secondary: Colors.amber,
+          primary: Colors.deepPurpleAccent,
+          secondary: Colors.blueAccent,
         ),
         textTheme: tema.textTheme.copyWith(
           headline6: TextStyle(
