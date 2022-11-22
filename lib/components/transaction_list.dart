@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class TransactionList extends StatelessWidget {
-  const TransactionList({Key? key, required this.transaction})
+  const TransactionList(
+      {Key? key, required this.transaction, required this.onRemove})
       : super(key: key);
   final List<Transaction> transaction;
+  final void Function(String) onRemove;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 300,
+        height: 600,
         child: transaction.isEmpty
             ? Column(
                 children: [
@@ -63,6 +65,11 @@ class TransactionList extends StatelessWidget {
                       ),
                       subtitle: Text(
                         DateFormat("dd/MM/yyyy - hh:mm a").format(tr.date),
+                      ),
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete),
+                        color: Theme.of(context).errorColor,
+                        onPressed: () => onRemove(tr.id),
                       ),
                     ),
                   );
